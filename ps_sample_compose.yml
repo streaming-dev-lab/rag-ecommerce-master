@@ -1,0 +1,32 @@
+services:
+  data:
+    build:
+      dockerfile_inline: |
+        FROM alpine
+
+        ADD ./post-init.sh /tmp/init-scripts/post-init.sh
+        VOLUME /tmp/init-scripts
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: prestashop
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: prestashop
+    command: --server-id=1 --log-bin=mysql-bin --binlog-format=row --binlog-row-image=full
+  shop:
+    image: prestashop/prestashop:1.7
+    container_name: shop
+    environment:
+      DB_SERVER: mysql
+      DB_USER: prestashop
+      DB_PASSWD: $MYSQL_PASSWORD
+      PS_INSTALL_AUTO: 1
+      PS_DOMAIN: $VM_PUBLIC_IP
+    volumes_from:
+      - data
+    ports:
+      - 80:80

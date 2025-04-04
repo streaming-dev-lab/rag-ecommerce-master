@@ -1,0 +1,71 @@
+services:
+  chroma:
+    build:
+      dockerfile_inline: |
+        FROM python:3.12
+        RUN pip install chromadb
+        CMD ["chroma", "run", "--path", "/db", "--host", "0.0.0.0"]
+        EXPOSE 8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ./db:/db
+
+  chroma-ui:
+    ports:
+      - 8501:8501
+    build:
+      context: .
+      dockerfile_inline: |
+          FROM python:3.12
+          RUN ls -l
+          ADD requirements.txt /work/requirements.txt
+          ADD chroma-peek /work/chroma-peek
+          WORKDIR /work
+
+          RUN pip install -r requirements.txt
+          CMD ["/bin/sh" , "-c", "sleep 5 ; streamlit run chroma-peek/chroma-peek/main.py"]
+    environment:
+      CHROMA_HOST: chroma
+    depends_on:
+      - chroma
+
+  indexer:
+    build:
+      context: .
+      dockerfile_inline: |
+          FROM python:3.12
+          RUN ls -l
+          ADD requirements.txt /work/requirements.txt
+          ADD indexer.py /work/indexer.py
+          ADD client.properties /work/client.properties
+          ADD sr.properties /work/sr.properties
+          WORKDIR /work
+          RUN pip install -r requirements.txt
+          CMD ["/bin/sh" , "-c", "sleep 5 ; python indexer.py"]
+    environment:
+      CHROMA_HOST: chroma
+      OPENAI_API_KEY: $OPENAI_API_KEY
+      SHOP_BASE_URL: $SHOP_BASE_URL
+    depends_on:
+      - chroma
+  api:
+    build:
+      dockerfile_inline: |
+        FROM python:3.12
+        RUN ls -l
+        ADD requirements.txt /work/requirements.txt
+        ADD api.py /work/api.py
+        ADD client.properties /work/client.properties
+        ADD sr.properties /work/sr.properties
+        WORKDIR /work
+        RUN pip install -r requirements.txt
+        CMD ["/bin/sh" , "-c", "sleep 5 ; python api.py"]
+    depends_on:
+      - chroma
+    ports:
+      - 8001:8001
+    environment:
+      CHROMA_HOST: chroma
+      OPENAI_API_KEY: $OPENAI_API_KEY
+
