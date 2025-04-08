@@ -268,10 +268,10 @@ resource "confluent_flink_statement" "products_ddl" {
 CREATE TABLE products (
   `key` BIGINT NOT NULL,
   `available_for_order` BOOLEAN,
-  `quantity` INT,
   `uri` string,
   `description` string,
   `description_short` string,
+  `price` DECIMAL(20,6),
   CONSTRAINT `PRIMARY` PRIMARY KEY (`key`) NOT ENFORCED
 );
 EOT
@@ -311,15 +311,15 @@ insert into products
 select
     p.id_product,
     p.after.available_for_order =1,
-    p.after.quantity,
     concat(
         c.after.link_rewrite, '/' ,
         cast(p.id_product as string) , '-' ,
         cast (p.after.cache_default_attribute as string), '-' ,
         pl.after.link_rewrite , '.html' ),
     pl.after.description,
-    pl.after.description_short
-from `fa560f9da14.prestashop.ps_product` p join `fa560f9da14.prestashop.ps_product_lang` pl on p.id_product = pl.id_product
+    pl.after.description_short,
+    p.after.price
+from `fa560f9da14.prestashop.ps_product_shop` p join `fa560f9da14.prestashop.ps_product_lang` pl on p.id_product = pl.id_product
 left join `fa560f9da14.prestashop.ps_category_product` cp on pl.id_product=cp.id_product and p.after.id_category_default = cp.id_category
 left join `fa560f9da14.prestashop.ps_category_lang` c on cp.id_category = c.id_category;
 EOT
@@ -372,7 +372,7 @@ resource "confluent_connector" "source" {
   "poll.interval.ms"          ="500"
   "errors.deadletterqueue.topic.name" = "db.errors"
   "snapshot.mode"             ="when_needed"
-  "table.include.list"        ="prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product, prestashop.ps_product_lang,prestashop.ps_category_product"
+  "table.include.list"        ="prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product"
   "tasks.max"                 ="1"
   "database.history.skip.unparseable.ddl"="true"
 

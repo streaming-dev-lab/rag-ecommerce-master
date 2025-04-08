@@ -68,7 +68,7 @@ def consume_records_builder(products: Collection):
                     (r['description_short'] or "") + (r['description'] or "")
                 ],
                 #metadatas={'url': os.environ['SHOP_BASE_URL'] + r['uri']},
-                metadatas={'url': os.environ['SHOP_BASE_URL'] + r['uri'],'quantity': r['quantity']},
+                metadatas={'url': os.environ['SHOP_BASE_URL'] + r['uri'],'price': float(r['price'])},
                 ids=[k],
             )
         else:
