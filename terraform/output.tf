@@ -51,6 +51,7 @@ session.timeout.ms=45000
 
 group.id=rag
 auto.offset.reset=earliest
+isolation.level=read_uncommitted
 
 EOT
 }
