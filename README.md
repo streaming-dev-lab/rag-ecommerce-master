@@ -3,21 +3,18 @@
 <br>
 
 ## **Agenda**
-1. []xx
+1. [Access environment](#step-1)
 2. []xx
 
 ***
 
 ## **Prerequisites**
-<br>
-
 1. xx
 2. xx
 
 ***
 
 ## **Objective**
-<br>
 Welcome to “Build an AI-Powered Shopping Assistant with Retrieval-Augmented Generation (RAG) and Real-Time Data Streams”!
 In this workshop, you’ll learn how to create a smart, conversational shopping experience that understands what customers are looking for—whether it’s “running shoes under $100” or “eco-friendly kitchen products made in the US.”
 
@@ -34,4 +31,11 @@ Use large language models (LLMs) to make product discovery more natural and intu
 Whether you're working on product search, virtual shopping assistants, or personalized recommendations, this workshop will give you a hands-on introduction to what’s possible with Retrieval-Augmented Generation in retail.
 
 ![architecture](./architect.png)
+![demo](./demo.gif)
+***
+
+## <a name="step-1"></a>Access environment
+
+
+
 ***
