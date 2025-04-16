@@ -1,62 +1,37 @@
-# E-commerce RAG demo
+# <div align="center">Building Conversational AI with Real-Time Data Powered by Confluent</div>
+## <div align="center">Lab Guide</div>
+<br>
 
-This demo showcases an example about how to build a pipeline to keep a vector DB up to date and use it to always build a prompt with fresh data from an e-commerce shop.  
-![architecture](./architecture.jpg)
+## **Agenda**
+1. []xx
+2. []xx
 
-![Demo](demo.gif)
+***
 
-This is based on a Prestashop sample that is running on top of a MySQL DB. The [MySQL CDC Source Connector](https://www.confluent.io/hub/debezium/debezium-connector-mysql) tracks changed in real time from the database.
+## **Prerequisites**
+<br>
 
-A single [Flink](https://developer.confluent.io/courses/flink-sql/overview/) statement processes the changes coming from different tables in order to build an autonomous record to be stored in a [Chroma](https://www.trychroma.com/) vector database.
+1. xx
+2. xx
 
-Between the Flink statement output topic and the vector DB, a Python app is consuming the records, applies an embedding to the description and stores is as a vector. 
+***
 
-A langchain pipeline is used to build the prompt based on a customer question, adds context based on a similarity search request applied to the vector DB and wrap the results into the prompt submitted to the OpenAI platform API.
+## **Objective**
+<br>
+Welcome to “Build an AI-Powered Shopping Assistant with Retrieval-Augmented Generation (RAG) and Real-Time Data Streams”!
+In this workshop, you’ll learn how to create a smart, conversational shopping experience that understands what customers are looking for—whether it’s “running shoes under $100” or “eco-friendly kitchen products made in the US.”
 
-## Run it
-The provisioning process is fully automated with teh `setup_aws.sh`. 
-- It creates an EC2 instance
-- Installs the Docker daemon
-- Sends all files 
-- Start the containers: MySQL DB, Prestashop sample, the Chroma DB, the Python document indexer and the Langchain pipeline with the playground to emulate the agent integration within the shop. 
-- Then it creates a [Confluent Cloud](https://confluent.cloud) from the ground with a Kafka cluster, the fully managed CDC source connector and a Flink pool with the statement to process the changes.
+We’ll walk through how modern eCommerce platforms can combine real-time data, search, and AI to build a virtual assistant that’s always up-to-date and ready to help.
 
-The `setup_aws.sh` script requires a configuration file defined with an environment variable holding the following variables:
+By the end of this workshop, you’ll understand how to:
 
-```shell
-AWS_REGION=<region>
-AWS_PROFILE=<profile>
-SSH_PUB_KEY_FILE='~/.ssh/id_rsa.pub'
-VM_OWNER=<value to populate the owner s tag>
+Turn product data into searchable knowledge using vector databases and embeddings
 
-MYSQL_ROOT_PASSWORD=<password>
-MYSQL_PASSWORD=<password>
+Keep the assistant’s knowledge fresh with real-time updates from your systems
 
-CONFLUENT_CLOUD_API_KEY=<key>
-CONFLUENT_CLOUD_API_SECRET=<secret>
-CONFLUENT_CLOUD_REGION=$AWS_REGION
-CONFLUENT_CLOUD_PROVIDER=AWS
+Use large language models (LLMs) to make product discovery more natural and intuitive
 
-OPENAI_API_KEY=<key>
-```
-```shell 
-$ CONFIG_FILE=[..]/config_aws.properties ./aws_setup.sh 
-Config file: [..]/config_aws.properties
-Initializing the backend...
-[...]
-Now you can visit the shop at http://18.201.108.106
-cluster = "SASL_SSL://pkc-[...].[region].aws.confluent.cloud:9092"
-sr_endpoint = "https://psrc-[...].[region].aws.confluent.cloud"
-urls = <<EOT
-Shop: 			http://18.21.108.106
-Backend:  		http://18.21.108.106/admin2 (demo@prestashop.com/prestashop_demo)
-AI Playground: 	http://18.21.108.106:8001/chat/playground/
+Whether you're working on product search, virtual shopping assistants, or personalized recommendations, this workshop will give you a hands-on introduction to what’s possible with Retrieval-Augmented Generation in retail.
 
-EOT
-```
-
-Now you can browse to the Langchain playground application and ask questions about the products for sale on the shop! 
-
-
-⚠️ Don't forget that you will be charged for the provisioned resources, so as soon as you no longer need the demo, think about disposing everything, and the `teardown_aws.sh` script is here to destroy everything.
-
+![architecture](./architect.png)
+***
