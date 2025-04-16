@@ -31,7 +31,10 @@ Use large language models (LLMs) to make product discovery more natural and intu
 Whether you're working on product search, virtual shopping assistants, or personalized recommendations, this workshop will give you a hands-on introduction to what’s possible with Retrieval-Augmented Generation in retail.
 
 ![architecture](./architect.png)
-![demo](./demo.gif)
+![demo](./demob.gif)
+
+>💡 This workshop is based on the open-source project:
+> [bleporini/rag-ecommerce](https://github.com/bleporini/rag-ecommerce)
 ***
 
 ## <a name="step-1"></a>Access environment
