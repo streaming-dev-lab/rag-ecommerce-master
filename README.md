@@ -6,6 +6,7 @@
 1. [Access environment](#step-1)
 2. [Interacting with a bot that knows nothing](#step-2)
 3. [Log into and Explore Confluent cloud](#step-3)
+4. [Create connector to pull data from database](#step-4)
 
 ***
 
@@ -80,9 +81,14 @@ cat xxxxxxxxxxxxx
     <img src="img/step3_2_env.png" style="max-width: 400px">
 </div>
 
-3. Explore Confluent Kafka Topic 
+3. Explore Confluent Kafka Topic. 
+>🔍 At the beginning, the Kafka topic will not yet exist. In the following section, we will set up a `connector` to pull the data in.
 <div align="center" padding=25px>
-    <img src="img/step3_3_topc.png" style="max-width: 400px">
+    <img src="img/step3_3_topic.png" style="max-width: 400px">
 </div>
+
+***
+
+## <a name="step-1"></a>Step 4 Create connector to pull data from database
 
 ***
