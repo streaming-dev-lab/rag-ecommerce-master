@@ -65,6 +65,16 @@ cat xxxxxxxxxxxxx
 
 ## <a name="step-2"></a>Step 2 Interacting with a bot that knows nothing.
 1. Access AI playground (url in [1.4](#file-url)) and play around AI without knowledge.
+<div align="center" padding=25px>
+    <img src="img/step2_1.png" style="max-width: 500px">
+</div>
+
+>#### 🔍 Why doesn’t the AI have any knowledge? If we look at the current architecture diagram, we can see that the AI is unable to provide any information because no data has been ingested into the vector store yet.
+
+2. So, before we begin, it's important to understand what we'll be doing in this workshop. We'll ingest data from a shop into Confluent Kafka using a CDC Connector, process it with Confluent Flink, and then store it in a vector store using an indexer implemented as a Python application.
+<div align="center" padding=25px>
+    <img src="img/step2_2.png" style="max-width: 400px">
+</div>
 
 ***
 
@@ -80,6 +90,7 @@ cat xxxxxxxxxxxxx
 <div align="center" padding=25px>
     <img src="img/step3_2_env.png" style="max-width: 400px">
 </div>
+<br>
 
 3. Explore Confluent Kafka Topic. 
 >🔍 At the beginning, the Kafka topic will not yet exist. In the following section, we will set up a `connector` to pull the data in.
