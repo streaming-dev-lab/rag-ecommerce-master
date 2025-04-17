@@ -38,7 +38,7 @@ Whether you're working on product search, virtual shopping assistants, or person
 > [bleporini/rag-ecommerce](https://github.com/bleporini/rag-ecommerce)
 ***
 
-## <a name="step-1"></a>Step 1 Access environment
+## <a name="step-1"></a>Step 1 Access environment.
 1. Open terminal (For MacOs using `terminal` and Window using `PowerShell`).
 2. SSH to workshop environment, password will be invisible when input.
 ```ssh
@@ -89,6 +89,6 @@ cat xxxxxxxxxxxxx
 
 ***
 
-## <a name="step-1"></a>Step 4 Create connector to pull data from database
+## <a name="step-4"></a>Step 4 Create connector to pull data from database.
 
 ***
