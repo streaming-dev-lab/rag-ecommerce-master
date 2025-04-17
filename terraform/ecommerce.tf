@@ -250,137 +250,137 @@ resource "confluent_kafka_acl" "app-manager-read-on-topic-connect" {
   }
 }
 
-resource "confluent_flink_statement" "products_ddl" {
-  compute_pool {
-    id = confluent_flink_compute_pool.main.id
-  }
-  principal {
-    id = confluent_service_account.statements-runner.id
-  }
-  organization {
-    id = data.confluent_organization.main.id
-  }
-  environment {
-    id = confluent_environment.ecommerce.id
-  }
+# resource "confluent_flink_statement" "products_ddl" {
+#   compute_pool {
+#     id = confluent_flink_compute_pool.main.id
+#   }
+#   principal {
+#     id = confluent_service_account.statements-runner.id
+#   }
+#   organization {
+#     id = data.confluent_organization.main.id
+#   }
+#   environment {
+#     id = confluent_environment.ecommerce.id
+#   }
+#
+#   statement  = <<-EOT
+# CREATE TABLE products (
+#   `key` BIGINT NOT NULL,
+#   `available_for_order` BOOLEAN,
+#   `uri` string,
+#   `description` string,
+#   `description_short` string,
+#   `price` DECIMAL(20,6),
+#   CONSTRAINT `PRIMARY` PRIMARY KEY (`key`) NOT ENFORCED
+# );
+# EOT
+#   properties = {
+#     "sql.current-catalog"  = confluent_environment.ecommerce.display_name
+#     "sql.current-database" = confluent_kafka_cluster.basic.display_name
+#   }
+#   rest_endpoint   = data.confluent_flink_region.region.rest_endpoint
+#   credentials {
+#     key    = confluent_api_key.app-manager-flink-api-key.id
+#     secret = confluent_api_key.app-manager-flink-api-key.secret
+#   }
+#
+#   depends_on = [
+#     confluent_flink_compute_pool.main,
+#     #confluent_connector.source,
+#     confluent_role_binding.app-manager-assigner,
+#     confluent_role_binding.app-manager-flink-developer
+#   ]
+# }
+# resource "confluent_flink_statement" "products_dml" {
+#   compute_pool {
+#     id = confluent_flink_compute_pool.main.id
+#   }
+#   principal {
+#     id = confluent_service_account.statements-runner.id
+#   }
+#   organization {
+#     id = data.confluent_organization.main.id
+#   }
+#   environment {
+#     id = confluent_environment.ecommerce.id
+#   }
+#
+#   statement  = <<-EOT
+# insert into products
+# select
+#     p.id_product,
+#     p.after.available_for_order =1,
+#     concat(
+#         c.after.link_rewrite, '/' ,
+#         cast(p.id_product as string) , '-' ,
+#         cast (p.after.cache_default_attribute as string), '-' ,
+#         pl.after.link_rewrite , '.html' ),
+#     pl.after.description,
+#     pl.after.description_short,
+#     p.after.price
+# from `fa560f9da14.prestashop.ps_product_shop` p join `fa560f9da14.prestashop.ps_product_lang` pl on p.id_product = pl.id_product
+# left join `fa560f9da14.prestashop.ps_category_product` cp on pl.id_product=cp.id_product and p.after.id_category_default = cp.id_category
+# left join `fa560f9da14.prestashop.ps_category_lang` c on cp.id_category = c.id_category;
+# EOT
+#   properties = {
+#     "sql.current-catalog"  = confluent_environment.ecommerce.display_name
+#     "sql.current-database" = confluent_kafka_cluster.basic.display_name
+#   }
+#   rest_endpoint   = data.confluent_flink_region.region.rest_endpoint
+#   credentials {
+#     key    = confluent_api_key.app-manager-flink-api-key.id
+#     secret = confluent_api_key.app-manager-flink-api-key.secret
+#   }
+#
+#   depends_on = [
+#     confluent_flink_compute_pool.main,
+#     #confluent_connector.source,
+#     confluent_role_binding.app-manager-assigner,
+#     confluent_role_binding.app-manager-flink-developer,
+#     confluent_flink_statement.products_ddl
+#   ]
+# }
 
-  statement  = <<-EOT
-CREATE TABLE products (
-  `key` BIGINT NOT NULL,
-  `available_for_order` BOOLEAN,
-  `uri` string,
-  `description` string,
-  `description_short` string,
-  `price` DECIMAL(20,6),
-  CONSTRAINT `PRIMARY` PRIMARY KEY (`key`) NOT ENFORCED
-);
-EOT
-  properties = {
-    "sql.current-catalog"  = confluent_environment.ecommerce.display_name
-    "sql.current-database" = confluent_kafka_cluster.basic.display_name
-  }
-  rest_endpoint   = data.confluent_flink_region.region.rest_endpoint
-  credentials {
-    key    = confluent_api_key.app-manager-flink-api-key.id
-    secret = confluent_api_key.app-manager-flink-api-key.secret
-  }
-
-  depends_on = [
-    confluent_flink_compute_pool.main,
-    confluent_connector.source,
-    confluent_role_binding.app-manager-assigner,
-    confluent_role_binding.app-manager-flink-developer
-  ]
-}
-resource "confluent_flink_statement" "products_dml" {
-  compute_pool {
-    id = confluent_flink_compute_pool.main.id
-  }
-  principal {
-    id = confluent_service_account.statements-runner.id
-  }
-  organization {
-    id = data.confluent_organization.main.id
-  }
-  environment {
-    id = confluent_environment.ecommerce.id
-  }
-
-  statement  = <<-EOT
-insert into products
-select
-    p.id_product,
-    p.after.available_for_order =1,
-    concat(
-        c.after.link_rewrite, '/' ,
-        cast(p.id_product as string) , '-' ,
-        cast (p.after.cache_default_attribute as string), '-' ,
-        pl.after.link_rewrite , '.html' ),
-    pl.after.description,
-    pl.after.description_short,
-    p.after.price
-from `fa560f9da14.prestashop.ps_product_shop` p join `fa560f9da14.prestashop.ps_product_lang` pl on p.id_product = pl.id_product
-left join `fa560f9da14.prestashop.ps_category_product` cp on pl.id_product=cp.id_product and p.after.id_category_default = cp.id_category
-left join `fa560f9da14.prestashop.ps_category_lang` c on cp.id_category = c.id_category;
-EOT
-  properties = {
-    "sql.current-catalog"  = confluent_environment.ecommerce.display_name
-    "sql.current-database" = confluent_kafka_cluster.basic.display_name
-  }
-  rest_endpoint   = data.confluent_flink_region.region.rest_endpoint
-  credentials {
-    key    = confluent_api_key.app-manager-flink-api-key.id
-    secret = confluent_api_key.app-manager-flink-api-key.secret
-  }
-
-  depends_on = [
-    confluent_flink_compute_pool.main,
-    confluent_connector.source,
-    confluent_role_binding.app-manager-assigner,
-    confluent_role_binding.app-manager-flink-developer,
-    confluent_flink_statement.products_ddl
-  ]
-}
-
-resource "confluent_connector" "source" {
-  environment {
-    id = confluent_environment.ecommerce.id
-  }
-  kafka_cluster {
-    id = confluent_kafka_cluster.basic.id
-  }
-
-  config_sensitive = {}
-
-  config_nonsensitive = {
-  "name"                      ="CDC_source"
-  "connector.class"           ="MySqlCdcSourceV2"
-  "database.hostname"         = aws_instance.bastion.public_ip
-  "database.include.list"     ="prestashop"
-  "database.password"         = var.db_password
-  "database.port"             ="3306"
-  "topic.prefix"      ="fa560f9da14"
-  "database.ssl.mode"         ="preferred"
-  "database.user"             = "root"
-  "json.output.decimal.format"="NUMERIC"
-  "kafka.api.key"             =confluent_api_key.app-manager-kafka-api-key.id
-  "kafka.api.secret"          =confluent_api_key.app-manager-kafka-api-key.secret
-  "kafka.auth.mode"           ="KAFKA_API_KEY"
-  "max.batch.size"            ="1000"
-  "output.data.format"        ="AVRO"
-  "output.key.format"         ="AVRO"
-  "poll.interval.ms"          ="500"
-  "errors.deadletterqueue.topic.name" = "db.errors"
-  "snapshot.mode"             ="when_needed"
-  "table.include.list"        ="prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product"
-  "tasks.max"                 ="1"
-  "database.history.skip.unparseable.ddl"="true"
-
-
-  }
-  depends_on = [
-    confluent_role_binding.app-manager-env-admin
-  ]
-
-}
+# resource "confluent_connector" "source" {
+#   environment {
+#     id = confluent_environment.ecommerce.id
+#   }
+#   kafka_cluster {
+#     id = confluent_kafka_cluster.basic.id
+#   }
+#
+#   config_sensitive = {}
+#
+#   config_nonsensitive = {
+#   "name"                      ="CDC_source"
+#   "connector.class"           ="MySqlCdcSourceV2"
+#   "database.hostname"         = aws_instance.bastion.public_ip
+#   "database.include.list"     ="prestashop"
+#   "database.password"         = var.db_password
+#   "database.port"             ="3306"
+#   "topic.prefix"      ="fa560f9da14"
+#   "database.ssl.mode"         ="preferred"
+#   "database.user"             = "root"
+#   "json.output.decimal.format"="NUMERIC"
+#   "kafka.api.key"             =confluent_api_key.app-manager-kafka-api-key.id
+#   "kafka.api.secret"          =confluent_api_key.app-manager-kafka-api-key.secret
+#   "kafka.auth.mode"           ="KAFKA_API_KEY"
+#   "max.batch.size"            ="1000"
+#   "output.data.format"        ="AVRO"
+#   "output.key.format"         ="AVRO"
+#   "poll.interval.ms"          ="500"
+#   "errors.deadletterqueue.topic.name" = "db.errors"
+#   "snapshot.mode"             ="when_needed"
+#   "table.include.list"        ="prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product"
+#   "tasks.max"                 ="1"
+#   "database.history.skip.unparseable.ddl"="true"
+#
+#
+#   }
+#   depends_on = [
+#     confluent_role_binding.app-manager-env-admin
+#   ]
+#
+# }
 

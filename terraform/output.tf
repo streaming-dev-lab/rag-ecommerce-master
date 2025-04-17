@@ -76,7 +76,18 @@ SHOP_BASE_URL=http://${aws_instance.bastion.public_ip}/
 EOT
 }
 
-
+resource "local_file" "information"{
+	filename = "${path.cwd}/../etc/information.properties"
+	content = <<-EOT
+Shop=                   http://${aws_instance.bastion.public_ip}
+Admin=                  http://${aws_instance.bastion.public_ip}/admin2 (demo@prestashop.com/prestashop_demo)
+AI_Playground=          http://${aws_instance.bastion.public_ip}:8001/chat/playground/
+MySQL=                  ${aws_instance.bastion.public_ip}:3306 (root/P@ssw0rd)
+Chroma_DB=              http://${aws_instance.bastion.public_ip}:8501/
+Confluent_API_KEY=      ${confluent_api_key.app-manager-kafka-api-key.id}
+Confluent_API_SECRET=   ${confluent_api_key.app-manager-kafka-api-key.secret}
+EOT
+}
 
 output "cluster"{
 	value = confluent_kafka_cluster.basic.bootstrap_endpoint
@@ -88,10 +99,15 @@ output "sr_endpoint"{
 
 output "urls" {
 	value =<<-EOT
-Shop: 			http://${aws_instance.bastion.public_ip}
-Backend:  		http://${aws_instance.bastion.public_ip}/admin2 (demo@prestashop.com/prestashop_demo)
-AI Playground: 	http://${aws_instance.bastion.public_ip}:8001/chat/playground/
+Shop: 			        http://${aws_instance.bastion.public_ip}
+Admin:  		        http://${aws_instance.bastion.public_ip}/admin2 (demo@prestashop.com/prestashop_demo)
+AI Playground: 	        http://${aws_instance.bastion.public_ip}:8001/chat/playground/
+MySQL:                  ${aws_instance.bastion.public_ip}:3306 (root/P@ssw0rd)
+Chroma DB:              http://${aws_instance.bastion.public_ip}:8501/
+Confluent API_KEY:      ${confluent_api_key.app-manager-kafka-api-key.id}
+Confluent API_SECRET:   ${confluent_api_key.app-manager-kafka-api-key.secret}
 EOT
+    sensitive = true
 }
 
 

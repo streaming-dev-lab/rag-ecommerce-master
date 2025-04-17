@@ -1,0 +1,18 @@
+services:
+  indexer:
+    build:
+      context: .
+      dockerfile_inline: |
+          FROM python:3.12
+          RUN ls -l
+          ADD requirements.txt /work/requirements.txt
+          ADD indexer.py /work/indexer.py
+          ADD client.properties /work/client.properties
+          ADD sr.properties /work/sr.properties
+          WORKDIR /work
+          RUN pip install -r requirements.txt
+          CMD ["/bin/sh" , "-c", "sleep 5 ; python indexer.py"]
+    environment:
+      CHROMA_HOST: $VM_PUBLIC_IP
+      OPENAI_API_KEY: $OPENAI_API_KEY
+      SHOP_BASE_URL: $SHOP_BASE_URL

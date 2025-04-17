@@ -82,6 +82,7 @@ scp $ssh_options rag/indexer.py ec2-user@$vm_pub_ip:~/
 scp $ssh_options rag/api.py ec2-user@$vm_pub_ip:~/
 scp $ssh_options rag/requirements.txt ec2-user@$vm_pub_ip:~/
 scp $ssh_options rag/compose.yml ec2-user@$vm_pub_ip:~/compose_rag.yml
+scp $ssh_options rag/indexer.yml ec2-user@$vm_pub_ip:~/indexer.yml
 scp $ssh_options ps_sample_compose.yml ec2-user@$vm_pub_ip:~/
 scp $ssh_options init-scripts/post-init.sh ec2-user@$vm_pub_ip:~/
 scp -r $ssh_options chroma-peek ec2-user@$vm_pub_ip:~/
@@ -114,6 +115,7 @@ cd ..
 
 scp $ssh_options etc/client.properties ec2-user@$vm_pub_ip:~/
 scp $ssh_options etc/sr.properties ec2-user@$vm_pub_ip:~/
+scp $ssh_options etc/information.properties ec2-user@$vm_pub_ip:~/
 
 ssh $ssh_options ec2-user@$vm_pub_ip docker run -d \
 	--name compose_rag \
