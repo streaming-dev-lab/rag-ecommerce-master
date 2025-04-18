@@ -227,3 +227,34 @@ SELECT * FROM `products`;
 ***
 
 ## <a name="step-6"></a>Step 6 Create Indexer to update knowledge from Confluent to Vector store
+
+1. Run the command to start the indexer application.
+```bash
+vm_pub_ip=$(cat ~/rag-ecommerce-master/terraform/tmp/commerce_bastion_ip.txt)
+ssh_options="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+```
+```bash
+ssh $ssh_options ec2-user@$vm_pub_ip docker run -d \
+--name compose-indexer \
+-v \$PWD:/work  \
+--workdir /work \
+-v /var/run/docker.sock:/var/run/docker.sock \
+docker compose -f indexer.yml up -d
+```
+
+2. Check the data stored in the vector store(refer to [CHROMA_DB](#file-url)).
+<div align="center" padding=25px>
+    <img src="img/step6_1.png" style="max-width: 500px">
+</div>
+<div align="center" padding=25px>
+    <img src="img/step6_2.png" style="max-width: 500px">
+</div>
+
+3. Try asking the AI again.
+<div align="center" padding=25px>
+    <img src="img/step6_4.png" style="max-width: 500px">
+</div>
+
+> ## 💡 As you can see, the AI is now able to respond to your questions since it has access to a knowledge base.
+
+*** 
