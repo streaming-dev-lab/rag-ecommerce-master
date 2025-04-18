@@ -7,12 +7,13 @@
 2. [Interacting with a bot that knows nothing](#step-2)
 3. [Log into and Explore Confluent cloud](#step-3)
 4. [Create connector to pull data from database](#step-4)
+5. [Create Flink statement to process the data](#step-5)
+6. [Create Indexer to update knowledge from Confluent to Vector store](#step-6)
 
 ***
 
 ## **Prerequisites**
-1. xx
-2. xx
+### Make sure to review the workshop docs: GitHub repo, Confluent Cloud account, and credentials needed for the hands-on session.
 
 ***
 
@@ -52,14 +53,22 @@ ssh <user>@<url/ip>
 
 3. Change current directory to `rag-ecommerce-master`.
 ```ssh
-cd rag-ecommerce-master
+cd ~/rag-ecommerce-master
 ```
 <a name="file-url"></a>
-4. Check your web url.
+4. Check your environment.
 ```ssh
-cat xxxxxxxxxxxxx
+cat ~/rag-ecommerce-master/etc/information.properties
 ```
->💡 This file contain url of Ecommerce web, Admin web, AI playground, VectorStore UI and Cloud API key/sercret.
+<div align="center" padding=25px>
+    <img src="img/step2_3.png" width="100%" style="max-width: 500px">
+</div>
+
+<div align="center" padding=25px>
+    <img src="img/step1_2_shoppreview.png" width="100%" style="max-width: 500px">
+</div>
+
+> #### 💡 This file contain url of Ecommerce web, Admin web, AI playground, VectorStore UI and Cloud API key/sercret.
 
 ***
 
@@ -84,7 +93,6 @@ cat xxxxxxxxxxxxx
     <img src="img/step3_1.png" style="max-width: 400px">
 </div>
 
-<!-- ![ccloud](img/step3_1.png) -->
 >💡 See email and password from document.
 2. Explore Confluent Cloud enviroment (Please check your environment name from document).
 <div align="center" padding=25px>
@@ -101,5 +109,121 @@ cat xxxxxxxxxxxxx
 ***
 
 ## <a name="step-4"></a>Step 4 Create connector to pull data from database.
+1. Go to the `Connectors` tab on the left panel.
+<div align="center" padding=25px>
+    <img src="img/step4_1_connector.png" style="max-width: 400px">
+</div>
+
+2. Search for `MySQL CDC Source V2`.
+<div align="center" padding=25px>
+    <img src="img/step4_2_cdc.png" style="max-width: 400px">
+</div>
+
+3. Enter your API Key and Secret (refer to the this [file](#file-url)).
+<div align="center" padding=25px>
+    <img src="img/step4_3_api2.png" style="max-width: 400px">
+</div>
+
+4. Fill in the `database` connection details.
+<div align="center" padding=25px>
+    <img src="img/step4_4_db.png" style="max-width: 400px">
+</div>
+
+> Database username/Database password : `root`/`P@ssw0rd`
+
+5. Change the configuration settings.
+<div align="center" padding=25px>
+    <img src="img/step4_5_cnconf.png" style="max-width: 400px">
+</div>
+
+> Snapshot mode : `when_needed`
+> Databases included : `prestashop`
+> Tables included : `prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product`
+
+6. On the Sizing page, click Continue.
+7. On the Review and Launch page, click Continue again.
+<div align="center" padding=25px>
+    <img src="img/step4_7_created.png" style="max-width: 400px">
+</div>
+
+8. Wait until the connector status becomes "Running".
+<div align="center" padding=25px>
+    <img src="img/step4_8.png" style="max-width: 400px">
+</div>
+
+9. Go to the Topics tab — you should see a topic has been created.
+<div align="center" padding=25px>
+    <img src="img/step4_9.png" style="max-width: 400px">
+</div>
 
 ***
+
+## <a name="step-5"></a>Step 5 Create Flink statement to process the data.
+
+1. Go to the `Flink` page via your environment and select `Open SQL Workspace`.
+<div align="center" padding=25px>
+    <img src="img/step5_1.png" style="max-width: 400px">
+</div>
+
+2. (`Important!`) In the top-right corner, set the Database to `ecommerce-poc` and make sure the Catalog matches your environment group.
+<div align="center" padding=25px>
+    <img src="img/step5_2.png" style="max-width: 400px">
+</div>
+
+3. Place flink statement to the block for create the `products` table then click Run.
+```sql
+CREATE TABLE products (
+   `key` BIGINT NOT NULL,
+   `available_for_order` BOOLEAN,
+   `uri` string,
+   `description` string,
+   `description_short` string,
+   `price` DECIMAL(20,6),
+   CONSTRAINT `PRIMARY` PRIMARY KEY (`key`) NOT ENFORCED
+);
+```
+<div align="center" padding=25px>
+    <img src="img/step5_4.png" style="max-width: 400px">
+</div>
+
+4. Place flink statement to join data from the connector and insert it into the `products` table.
+> #### Replace `REPLACE_THIS` (4 place) with your environment group e.g. gp1,gp2...
+```sql
+insert into products
+select
+    p.id_product,
+    p.after.available_for_order =1,
+    concat(
+        c.after.link_rewrite, '/' ,
+        cast(p.id_product as string) , '-' ,
+        cast (p.after.cache_default_attribute as string), '-' ,
+        pl.after.link_rewrite , '.html' ),
+    pl.after.description,
+    pl.after.description_short,
+    p.after.price
+from `REPLACE_THIS.prestashop.ps_product_shop` p join `REPLACE_THIS.prestashop.ps_product_lang` pl on p.id_product = pl.id_product
+left join `REPLACE_THIS.prestashop.ps_category_product` cp on pl.id_product=cp.id_product and p.after.id_category_default = cp.id_category
+left join `REPLACE_THIS.prestashop.ps_category_lang` c on cp.id_category = c.id_category;
+```
+<div align="center" padding=25px>
+    <img src="img/step5_5_guide.png" style="max-width: 400px">
+</div>
+
+5. Run a SELECT query on the products table. This query will showing result from join statement.
+```sql
+SELECT * FROM `products`;
+```
+<div align="center" padding=25px>
+    <img src="img/step5_6.png" style="max-width: 400px">
+</div>
+
+6. You can check the products topic in the `Topics` tab to see the written data.
+<div align="center" padding=25px>
+    <img src="img/step5_7.png" style="max-width: 400px">
+</div>
+
+> ### 💡 Now we have the "products" topic populated — this will act as the real-time knowledge source for the AI.
+
+***
+
+## <a name="step-6"></a>Step 6 Create Indexer to update knowledge from Confluent to Vector store
