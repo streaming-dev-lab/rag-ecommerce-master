@@ -40,7 +40,8 @@ Whether you're working on product search, virtual shopping assistants, or person
 
 ## <a name="step-1"></a>Step 1 Access environment.
 1. Open terminal (For MacOs using `terminal` and Window using `PowerShell`).
-2. SSH to workshop environment, password will be invisible when input.
+2. SSH to workshop environment.
+> ### `password` will be invisible when input.
 ```ssh
 ssh <user>@<url/ip>
 ```
@@ -74,14 +75,14 @@ cat ~/rag-ecommerce-master/etc/information.properties
     <img src="img/step2_3.png" width="100%" style="max-width: 500px">
 </div>
 
+> #### AI playground will be look like this, you can play around with an AI. (you can leave **Conversation ID** and **User ID** as default values).
+<div align="center" padding=25px>
+    <img src="img/step1_3.png" width="100%" style="max-width: 500px">
+</div>
+
 > #### You can access the Shop Web UI with above link.
 <div align="center" padding=25px>
     <img src="img/step1_2_shoppreview.png" width="100%" style="max-width: 500px">
-</div>
-
-> #### AI playground will be look like this, you can play around with AI.
-<div align="center" padding=25px>
-    <img src="img/step1_3.png" width="100%" style="max-width: 500px">
 </div>
 
 ***
@@ -89,7 +90,7 @@ cat ~/rag-ecommerce-master/etc/information.properties
 ## <a name="step-2"></a>Step 2 Interacting with a bot that knows nothing.
 1. Access AI playground (can find url from this [image](#file-url)) and play around AI without knowledge.
 <div align="center" padding=25px>
-    <img src="img/step1_3.png" style="max-width: 500px">
+    <img src="img/step2_1_gif.gif" style="max-width: 500px">
 </div>
 
 <br>
@@ -108,7 +109,8 @@ cat ~/rag-ecommerce-master/etc/information.properties
 ***
 
 ## <a name="step-3"></a>Step 3 Log into and Explore Confluent cloud.
-1. Log into [Confluent Cloud](https://confluent.cloud) and enter email and password.
+1. Log into Confluent Cloud and enter email and password.
+> <a href="https://confluent.cloud" target="_blank">Confluent Cloud</a>
 <div align="center" padding=25px>
     <img src="img/step3_1.png" style="max-width: 400px">
 </div>
@@ -127,7 +129,7 @@ cat ~/rag-ecommerce-master/etc/information.properties
 <br>
 
 3. Explore Confluent Kafka Topic. 
->🔍 At the beginning, the Kafka topic will not yet exist. In the following section, we will set up a `connector` to pull the data in.
+>🔍 At this point, the Kafka topic will not yet exist. In the next step, we will set up a `connector` to ingest the data from database to Kafka topic.
 <div align="center" padding=25px>
     <img src="img/step3_3_topic.png" style="max-width: 400px">
 </div>
@@ -146,6 +148,9 @@ cat ~/rag-ecommerce-master/etc/information.properties
 </div>
 
 3. Select **"Use an existing API Key"** and enter your API Key and Secret (you can copy from this [image](#file-url) in ***Confluent_API_KEY/Confluent_API_SECRET*** by select the key and CTRL+C).
+<div align="center" padding=25px>
+    <img src="img/step4_3_api_nolink.png" style="max-width: 400px">
+</div>
 >💡  If you haven’t used the terminal for a while, your session might time out. You can simply [SSH](#step-1) back in at any time.
 <div align="center" padding=25px>
     <img src="img/step4_3_api.png" style="max-width: 400px">
@@ -153,6 +158,10 @@ cat ~/rag-ecommerce-master/etc/information.properties
 
 4. Fill in the `database` connection details.
 <a href="#file-url" target="_blank">See this image</a>
+<div align="center" padding=25px>
+    <img src="img/step4_4_db_ip.png" style="max-width: 400px">
+</div>
+
 > Example: MySQL=13.250.99.10:3306 (root/P@ssw0rd)
 **Database hostname** is 13.250.99.10 **Database port** is 3306 **Database username** is root and **Database password** is P@ssw0rd
 <div align="center" padding=25px>
@@ -190,17 +199,22 @@ cat ~/rag-ecommerce-master/etc/information.properties
 
 ## <a name="step-5"></a>Step 5 Create Flink statement to process the data.
 
-1. Go to the `Flink` page via your environment and select `Open SQL Workspace`.
+1. Click the `environment` name in the top-left corner of the screen.
+<div align="center" padding=25px>
+    <img src="img/step5_1_first.png" style="max-width: 400px">
+</div>
+
+2. Go to the `Flink` page via your environment and select `Open SQL Workspace`.
 <div align="center" padding=25px>
     <img src="img/step5_1.png" style="max-width: 400px">
 </div>
 
-2. (`Important!`) In the top-right corner, set the Database to `ecommerce-poc` and make sure the Catalog matches your environment group.
+3. (`Important!`) In the top-right corner, set the Database to `ecommerce-poc` and make sure the Catalog matches your environment group.
 <div align="center" padding=25px>
     <img src="img/step5_2.png" style="max-width: 400px">
 </div>
 
-3. Place flink statement to the block for create the `products` table then click Run.
+4. Place flink statement to the block for create the `products` table then click Run.
 ```sql
 CREATE TABLE products (
    `key` BIGINT NOT NULL,
@@ -216,8 +230,8 @@ CREATE TABLE products (
     <img src="img/step5_4.png" style="max-width: 400px">
 </div>
 
-4. Place flink statement to join data from the connector and insert it into the `products` table.
-> #### Replace `REPLACE_THIS` (4 place) with your environment group e.g. gp1,gp2...
+5. Place flink statement to join data from the connector and insert it into the `products` table.
+> #### Replace `REPLACE_THIS` (4 place) with your environment group e.g. gp1,gp2,etc.
 ```sql
 insert into products
 select
@@ -239,7 +253,7 @@ left join `REPLACE_THIS.prestashop.ps_category_lang` c on cp.id_category = c.id_
     <img src="img/step5_5_guide.png" style="max-width: 400px">
 </div>
 
-5. Run a SELECT query on the products table. This query will showing result from join statement.
+6. Run a SELECT query on the products table. This query will showing result from join statement.
 ```sql
 SELECT * FROM `products`;
 ```
@@ -247,7 +261,7 @@ SELECT * FROM `products`;
     <img src="img/step5_6.png" style="max-width: 400px">
 </div>
 
-6. You can check the products topic in the `Topics` tab to see the written data.
+7. You can check the **`products`** topic in the `Topics` tab to see the written data.
 <div align="center" padding=25px>
     <img src="img/step5_7.png" style="max-width: 400px">
 </div>
