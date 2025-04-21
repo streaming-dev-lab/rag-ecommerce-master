@@ -87,7 +87,7 @@ cat ~/rag-ecommerce-master/etc/information.properties
 ***
 
 ## <a name="step-2"></a>Step 2 Interacting with a bot that knows nothing.
-1. Access AI playground (url in [1.4](#file-url)) and play around AI without knowledge.
+1. Access AI playground (can find url from this [image](#file-url)) and play around AI without knowledge.
 <div align="center" padding=25px>
     <img src="img/step1_3.png" style="max-width: 500px">
 </div>
