@@ -141,7 +141,7 @@ Context from product database:
 {context_str}
 
 If the question is about a product, you should find the url in the metadata of each element of the context, then provide this url in your answer.
-If the question refers to something mentioned earlier (like "how much is that?"), use the previous conversation to understand what was referred to.
+If the question refers to something mentioned earlier (like "how much is that?"), use the previous conversation to understand what was referred to, but do not reuse the answer from the previous conversation to respond again..
 If you find options from the context that are irrelevant, you shall filter it out.
 
 Question: {question_str}
