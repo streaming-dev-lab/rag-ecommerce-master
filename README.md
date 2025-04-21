@@ -1,6 +1,5 @@
 # <div align="center">Building Conversational AI with Real-Time Data Powered by Confluent</div>
-## <div align="center">Lab Guide</div>
-<br>
+## <div align="center">Workshop Guide</div>
 
 ## **Agenda**
 1. [Access environment](#step-1)
@@ -125,6 +124,7 @@ cat ~/rag-ecommerce-master/etc/information.properties
 </div>
 
 4. Fill in the `database` connection details.
+<a href="#file-url" target="_blank">See this file</a>
 <div align="center" padding=25px>
     <img src="img/step4_4_db.png" style="max-width: 400px">
 </div>
