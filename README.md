@@ -80,7 +80,7 @@ cat ~/rag-ecommerce-master/etc/information.properties
     <img src="img/step1_3.png" width="100%" style="max-width: 500px">
 </div>
 
-> #### You can access the Shop Web UI with above link.
+> #### You can access the Shop Web UI from the link above.
 <div align="center" padding=25px>
     <img src="img/step1_2_shoppreview.png" width="100%" style="max-width: 500px">
 </div>
@@ -89,6 +89,9 @@ cat ~/rag-ecommerce-master/etc/information.properties
 
 ## <a name="step-2"></a>Step 2 Interacting with a bot that knows nothing.
 1. Access AI playground (can find url from this [image](#file-url)) and play around AI without knowledge.
+<div align="center" padding=25px>
+    <img src="img/step2_1_url.png" style="max-width: 500px">
+</div>
 <div align="center" padding=25px>
     <img src="img/step2_1_gif.gif" style="max-width: 500px">
 </div>
@@ -147,50 +150,61 @@ cat ~/rag-ecommerce-master/etc/information.properties
     <img src="img/step4_2_cdc.png" style="max-width: 400px">
 </div>
 
-3. Select **"Use an existing API Key"** and enter your API Key and Secret (you can copy from this [image](#file-url) in ***Confluent_API_KEY/Confluent_API_SECRET*** by select the key and CTRL+C).
-<div align="center" padding=25px>
-    <img src="img/step4_3_api_nolink.png" style="max-width: 400px">
-</div>
+3. Select **"Use an existing API Key"** and enter your API Key and Secret.
+
 >💡  If you haven’t used the terminal for a while, your session might time out. You can simply [SSH](#step-1) back in at any time.
 <div align="center" padding=25px>
     <img src="img/step4_3_api.png" style="max-width: 400px">
 </div>
 
+> You can copy from this [image](#file-url) in ***Confluent_API_KEY/Confluent_API_SECRET*** by select the key and CTRL+C
+<div align="center" padding=25px>
+    <img src="img/step4_3_api_nolink.png" style="max-width: 400px">
+</div>
+<br>
+
 4. Fill in the `database` connection details.
-<a href="#file-url" target="_blank">See this image</a>
+<div align="center" padding=25px>
+    <img src="img/step4_4_db.png" style="max-width: 400px">
+</div>
 <div align="center" padding=25px>
     <img src="img/step4_4_db_ip.png" style="max-width: 400px">
 </div>
 
 > Example: MySQL=13.250.99.10:3306 (root/P@ssw0rd)
 **Database hostname** is 13.250.99.10 **Database port** is 3306 **Database username** is root and **Database password** is P@ssw0rd
-<div align="center" padding=25px>
-    <img src="img/step4_4_db.png" style="max-width: 400px">
-</div>
-
-> Database username/Database password : `root`/`P@ssw0rd`
 
 5. Change the configuration settings.
 <div align="center" padding=25px>
     <img src="img/step4_5_cnconf.png" style="max-width: 400px">
 </div>
 
-> Snapshot mode : `when_needed`
-> Databases included : `prestashop`
-> Tables included : `prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product`
+> ### Snapshot mode :
+```text
+`when_needed`
+```
+> ### Databases included :
+```text
+`prestashop`
+```
+> ### Tables included :
+```text
+`prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product`
+```
 
-6. On the Sizing page, click Continue.
-7. On the Review and Launch page, click Continue again.
+6. On the `Sizing` page, click **`Continue`**.
+7. On the `Review and Launch` page, click **`Continue`** again.
 <div align="center" padding=25px>
     <img src="img/step4_7_created.png" style="max-width: 400px">
 </div>
 
-8. Wait until the connector status becomes "Running".
+8. Wait until the connector status becomes **`"Running"`**.
 <div align="center" padding=25px>
     <img src="img/step4_8.png" style="max-width: 400px">
 </div>
 
-9. Go to the Topics tab — you should see a topic has been created.
+9. Go to the **`Topics`** tab — you should see a topic has been created by connector. 
+> ### At this point, we’ve created a connector to pull data from the shop’s database into Confluent Kafka.
 <div align="center" padding=25px>
     <img src="img/step4_9.png" style="max-width: 400px">
 </div>
@@ -214,7 +228,7 @@ cat ~/rag-ecommerce-master/etc/information.properties
     <img src="img/step5_2.png" style="max-width: 400px">
 </div>
 
-4. Place flink statement to the block for create the `products` table then click Run.
+4. Place flink statement to the block for create the `products` table then click **`Run`**. 
 ```sql
 CREATE TABLE products (
    `key` BIGINT NOT NULL,
@@ -229,9 +243,10 @@ CREATE TABLE products (
 <div align="center" padding=25px>
     <img src="img/step5_4.png" style="max-width: 400px">
 </div>
+<br>
 
-5. Place flink statement to join data from the connector and insert it into the `products` table.
-> #### Replace `REPLACE_THIS` (4 place) with your environment group e.g. gp1,gp2,etc.
+5. Click **`+`** on the left to open new code block, Place flink statement to join data from the connector and insert it into the `products` table.
+> #### Replace all **`REPLACE_THIS`** (4 times) with your group ID, e.g., gp1, gp2. Use CTRL+F to help locate them.
 ```sql
 insert into products
 select
@@ -252,6 +267,7 @@ left join `REPLACE_THIS.prestashop.ps_category_lang` c on cp.id_category = c.id_
 <div align="center" padding=25px>
     <img src="img/step5_5_guide.png" style="max-width: 400px">
 </div>
+<br>
 
 6. Run a SELECT query on the products table. This query will showing result from join statement.
 ```sql
@@ -272,7 +288,24 @@ SELECT * FROM `products`;
 
 ## <a name="step-6"></a>Step 6 Create Indexer to update knowledge from Confluent to Vector store
 
-1. Run the command to start the indexer application.
+1. Open new terminal (For MacOs using `terminal` and Window using `PowerShell`).
+2. SSH to workshop environment on the new terminal.
+> ### `password` will be invisible when input.
+```ssh
+ssh <user>@<url/ip>
+```
+<div align="center" padding=25px>
+    <img src="img/step1_1.png">
+</div>
+
+>💡 See document for user and url in each group, Example `ssh gp1@ec2.amazonaws.com`
+
+3. Change current directory to `rag-ecommerce-master`.
+```ssh
+cd ~/rag-ecommerce-master
+```
+
+4. Run the command on new terminal to start the indexer application.
 ```bash
 vm_pub_ip=$(cat ~/rag-ecommerce-master/terraform/tmp/commerce_bastion_ip.txt)
 ssh_options="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
@@ -286,7 +319,7 @@ ssh $ssh_options ec2-user@$vm_pub_ip docker run -d \
 docker compose -f indexer.yml up -d
 ```
 
-2. Check the data stored in the vector store(refer to [CHROMA_DB](#file-url)).
+5. Check the data stored in the vector store(refer to [CHROMA_DB](#file-url)).
 <div align="center" padding=25px>
     <img src="img/step6_1.png" style="max-width: 500px">
 </div>
@@ -299,11 +332,11 @@ docker compose -f indexer.yml up -d
 
 >### 💡 The embedded data is stored in ChromaDB, a vector store, and is used as a real-time knowledge source for the AI to answer questions based on actual data.
 
-3. Try asking the AI again. [AI Playground](#file-url)
+6. Try asking the AI again. [AI Playground](#file-url)
 <div align="center" padding=25px>
     <img src="img/step6_4.png" style="max-width: 500px">
 </div>
 
 > ## 💡 As you can see, the AI is now able to respond to your questions since it has access to a knowledge base.
 
-*** 
+***
