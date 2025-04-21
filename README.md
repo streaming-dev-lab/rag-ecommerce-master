@@ -265,11 +265,11 @@ left join `REPLACE_THIS.prestashop.ps_category_product` cp on pl.id_product=cp.i
 left join `REPLACE_THIS.prestashop.ps_category_lang` c on cp.id_category = c.id_category;
 ```
 <div align="center" padding=25px>
-    <img src="img/step5_5_guide.png" style="max-width: 400px">
+    <img src="img/step5_5.png" style="max-width: 400px">
 </div>
 <br>
 
-6. Run a SELECT query on the products table. This query will showing result from join statement.
+6. Click **`+`** on the left to open new code block, Run a SELECT query on the products table. This query will showing result from join statement.
 ```sql
 SELECT * FROM `products`;
 ```
@@ -278,8 +278,9 @@ SELECT * FROM `products`;
 </div>
 
 7. You can check the **`products`** topic in the `Topics` tab to see the written data.
+> Click to `environment` tab on the left and select your environment then click `topic` tab
 <div align="center" padding=25px>
-    <img src="img/step5_7.png" style="max-width: 400px">
+    <img src="img/step5_7_hilg.png" style="max-width: 400px">
 </div>
 
 > ### 💡 Now we have the "products" topic populated — this will act as the real-time knowledge source for the AI.
