@@ -59,25 +59,46 @@ cd ~/rag-ecommerce-master
 ```ssh
 cat ~/rag-ecommerce-master/etc/information.properties
 ```
+> #### 💡 This file contain url of Ecommerce web, Admin web, AI playground, VectorStore UI and Cloud API key/sercret.
+
+```text
+- Shop = Url for shop web UI.
+- Admin = Url for shop web admin UI.
+- AI_Playground = Url for chat bot UI.
+- Chroma_DB = Url for vector store.
+- Confluent_API_KEY = API Key for Confluent Cloud.
+- Confluent_API_SECRET = SECRET key for Confluent Cloud.
+```
+
 <div align="center" padding=25px>
     <img src="img/step2_3.png" width="100%" style="max-width: 500px">
 </div>
 
+> #### You can access the Shop Web UI with above link.
 <div align="center" padding=25px>
     <img src="img/step1_2_shoppreview.png" width="100%" style="max-width: 500px">
 </div>
 
-> #### 💡 This file contain url of Ecommerce web, Admin web, AI playground, VectorStore UI and Cloud API key/sercret.
+> #### AI playground will be look like this, you can play around with AI.
+<div align="center" padding=25px>
+    <img src="img/step1_3.png" width="100%" style="max-width: 500px">
+</div>
 
 ***
 
 ## <a name="step-2"></a>Step 2 Interacting with a bot that knows nothing.
 1. Access AI playground (url in [1.4](#file-url)) and play around AI without knowledge.
 <div align="center" padding=25px>
+    <img src="img/step1_3.png" style="max-width: 500px">
+</div>
+
+<br>
+
+<div align="center" padding=25px>
     <img src="img/step2_1.png" style="max-width: 500px">
 </div>
 
->#### 🔍 Why doesn’t the AI have any knowledge? If we look at the current architecture diagram, we can see that the AI is unable to provide any information because no data has been ingested into the vector store yet.
+>### 🔍 Why doesn’t the AI have any knowledge? If we look at the current architecture diagram, we can see that the AI is unable to provide any information because no data has been ingested into the vector store yet.
 
 2. So, before we begin, it's important to understand what we'll be doing in this workshop. We'll ingest data from a shop into Confluent Kafka using a CDC Connector, process it with Confluent Flink, and then store it in a vector store using an indexer implemented as a Python application.
 <div align="center" padding=25px>
@@ -93,10 +114,16 @@ cat ~/rag-ecommerce-master/etc/information.properties
 </div>
 
 >💡 See email and password from document.
-2. Explore Confluent Cloud enviroment (Please check your environment name from document).
+2. Explore Confluent Cloud enviroment ***(Please refer environment name from your group number e.g. ecommerce_gp1)***.
 <div align="center" padding=25px>
     <img src="img/step3_2_env.png" style="max-width: 400px">
 </div>
+
+> Inside your environment will contain the Kafka cluster, you can click and explore the cluster.
+<div align="center" padding=25px>
+    <img src="img/step3_2_entered.png" style="max-width: 400px">
+</div>
+
 <br>
 
 3. Explore Confluent Kafka Topic. 
@@ -118,13 +145,16 @@ cat ~/rag-ecommerce-master/etc/information.properties
     <img src="img/step4_2_cdc.png" style="max-width: 400px">
 </div>
 
-3. Enter your API Key and Secret (refer to the this [file](#file-url)).
+3. Select **"Use an existing API Key"** and enter your API Key and Secret (you can copy from this [image](#file-url) in ***Confluent_API_KEY/Confluent_API_SECRET*** by select the key and CTRL+C).
+>💡  If you haven’t used the terminal for a while, your session might time out. You can simply [SSH](#step-1) back in at any time.
 <div align="center" padding=25px>
-    <img src="img/step4_3_api2.png" style="max-width: 400px">
+    <img src="img/step4_3_api.png" style="max-width: 400px">
 </div>
 
 4. Fill in the `database` connection details.
-<a href="#file-url" target="_blank">See this file</a>
+<a href="#file-url" target="_blank">See this image</a>
+> Example: MySQL=13.250.99.10:3306 (root/P@ssw0rd)
+**Database hostname** is 13.250.99.10 **Database port** is 3306 **Database username** is root and **Database password** is P@ssw0rd
 <div align="center" padding=25px>
     <img src="img/step4_4_db.png" style="max-width: 400px">
 </div>
@@ -246,11 +276,16 @@ docker compose -f indexer.yml up -d
 <div align="center" padding=25px>
     <img src="img/step6_1.png" style="max-width: 500px">
 </div>
+
+>If encountered any error, you can refresh the browser and **Enter persist path** wtih **gp** and click refresh on the right.
+
 <div align="center" padding=25px>
     <img src="img/step6_2.png" style="max-width: 500px">
 </div>
 
-3. Try asking the AI again.
+>### 💡 The embedded data is stored in ChromaDB, a vector store, and is used as a real-time knowledge source for the AI to answer questions based on actual data.
+
+3. Try asking the AI again. [AI Playground](#file-url)
 <div align="center" padding=25px>
     <img src="img/step6_4.png" style="max-width: 500px">
 </div>
