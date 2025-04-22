@@ -181,15 +181,15 @@ cat ~/rag-ecommerce-master/etc/information.properties
 
 > ### Snapshot mode :
 ```text
-`when_needed`
+when_needed
 ```
 > ### Databases included :
 ```text
-`prestashop`
+prestashop
 ```
 > ### Tables included :
 ```text
-`prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product`
+prestashop.ps_category_lang, prestashop.ps_cart_product, prestashop.ps_product_shop, prestashop.ps_product_lang,prestashop.ps_category_product
 ```
 
 6. On the `Sizing` page, click **`Continue`**.
