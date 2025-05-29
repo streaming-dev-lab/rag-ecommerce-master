@@ -2,6 +2,7 @@ import os
 import threading
 
 import chromadb
+import chromadb.utils.embedding_functions as embedding_functions
 from chromadb.api.models.Collection import Collection
 from chromadb.utils.embedding_functions import create_langchain_embedding
 from confluent_kafka import Consumer
@@ -84,10 +85,16 @@ def main():
     sr_config = read_config("sr.properties")
     topic = "products"
 
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-    chroma_embedding = create_langchain_embedding(embeddings)
+    openai_ef = embedding_functions.OpenAIEmbeddingFunction(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        model_name="text-embedding-3-large"
+    )
 
-    (client, products) = db(chroma_embedding)
+    # embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+    # chroma_embedding = create_langchain_embedding(embeddings)
+
+    # (client, products) = db(chroma_embedding)
+    (client, products) = db(openai_ef)
     consume(topic, config, sr_config, consume_records_builder(products))
 
 
