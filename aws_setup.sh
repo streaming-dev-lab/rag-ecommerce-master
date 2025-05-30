@@ -69,7 +69,8 @@ vm_pub_ip=$(cat tmp/commerce_bastion_ip.txt)
 echo VM public IP: $vm_pub_ip
 cd ..
 ## To avoid IP reuse with different keys
-ssh_options="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+# ssh_options="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+ssh_options="-i data.key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 check_ssh () {
 	ssh $ssh_options ec2-user@$vm_pub_ip echo OK
