@@ -37,6 +37,11 @@ Whether you're working on product search, virtual shopping assistants, or person
 >💡 This workshop is based on the open-source project:
 > [bleporini/rag-ecommerce](https://github.com/bleporini/rag-ecommerce)
 ***
+## <a name="step-0"></a>Generate Key pair.
+0. generate ssh key before run teraform
+```bash
+ssh-keygen -t rsa -b 2048 -f data.key -N ""
+```
 
 ## <a name="step-1"></a>Step 1 Access environment.
 1. Open terminal (For MacOs using `terminal` and Window using `PowerShell`).
@@ -251,17 +256,17 @@ CREATE TABLE products (
 insert into products
 select
     p.id_product,
-    p.after.available_for_order =1,
+    p.available_for_order =1,
     concat(
-        c.after.link_rewrite, '/' ,
+        c.link_rewrite, '/' ,
         cast(p.id_product as string) , '-' ,
-        cast (p.after.cache_default_attribute as string), '-' ,
-        pl.after.link_rewrite , '.html' ),
-    pl.after.description,
-    pl.after.description_short,
-    p.after.price
+        cast (p.cache_default_attribute as string), '-' ,
+        pl.link_rewrite , '.html' ),
+    pl.description,
+    pl.description_short,
+    p.price
 from `REPLACE_THIS.prestashop.ps_product_shop` p join `REPLACE_THIS.prestashop.ps_product_lang` pl on p.id_product = pl.id_product
-left join `REPLACE_THIS.prestashop.ps_category_product` cp on pl.id_product=cp.id_product and p.after.id_category_default = cp.id_category
+left join `REPLACE_THIS.prestashop.ps_category_product` cp on pl.id_product=cp.id_product and p.id_category_default = cp.id_category
 left join `REPLACE_THIS.prestashop.ps_category_lang` c on cp.id_category = c.id_category;
 ```
 <div align="center" padding=25px>

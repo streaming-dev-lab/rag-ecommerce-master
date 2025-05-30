@@ -4,7 +4,6 @@ import threading
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 from chromadb.api.models.Collection import Collection
-from chromadb.utils.embedding_functions import create_langchain_embedding
 from confluent_kafka import Consumer
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroDeserializer
@@ -90,13 +89,8 @@ def main():
         model_name="text-embedding-3-large"
     )
 
-    # embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-    # chroma_embedding = create_langchain_embedding(embeddings)
-
-    # (client, products) = db(chroma_embedding)
     (client, products) = db(openai_ef)
     consume(topic, config, sr_config, consume_records_builder(products))
-
 
 
 
